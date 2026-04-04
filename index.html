@@ -2,18 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AI Problem Solver</title>
+  <title>Treasure Hunt AI Demo</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>AI Problem Solver Demo</h1>
-  <p>Click the button to see AI choose the best option!</p>
+  <h1>Treasure Hunt AI Demo</h1>
+  <p>Watch the AI learn which treasure chest has the most points!</p>
 
-  <div>
-    <button id="runAI">Run AI</button>
+  <div id="chests">
+    <button class="chest-btn">🗝️ Chest A</button>
+    <button class="chest-btn">🗝️ Chest B</button>
+    <button class="chest-btn">🗝️ Chest C</button>
+    <button class="chest-btn">🗝️ Chest D</button>
   </div>
 
+  <button id="runAI">Run AI</button>
+
+  <div id="round">Round: 0</div>
   <div id="output"></div>
+  <div id="probabilities"></div>
 
   <script src="script.js"></script>
 </body>
