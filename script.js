@@ -57,7 +57,7 @@ function runAIStep() {
     roundDisplay.textContent = `Round: ${roundCount}`;
 
     // Compute softmax probabilities
-    const temperature = 5; // higher = more exploration
+    const temperature = 25; // higher = more exploration
     const probs = softmax(rewards, temperature);
 
     // Pick a chest based on probabilities
