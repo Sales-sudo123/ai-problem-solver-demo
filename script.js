@@ -7,69 +7,86 @@ let intervalId;
 const output = document.getElementById("output");
 const probDisplay = document.getElementById("probabilities");
 const roundDisplay = document.getElementById("round");
-const runBtn = document.getElementById("runAI");
-const stopBtn = document.getElementById("stopAI");
 
-// Setup Chart.js bar chart
+// Chart.js setup
 const ctx = document.getElementById('rewardChart').getContext('2d');
 const chart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: chests,
-    datasets: [{
-      label: 'Rewards',
-      data: rewards,
-      backgroundColor: ['#f1c40f','#e67e22','#1abc9c','#3498db']
-    }]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      y: { beginAtZero: true }
+    type: 'bar',
+    data: {
+        labels: chests,
+        datasets: [{
+            label: 'Rewards',
+            data: rewards,
+            backgroundColor: ['#f1c40f','#e67e22','#1abc9c','#3498db']
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.label}: ${context.raw} pts`;
+                    }
+                }
+            }
+        }
     }
-  }
 });
 
 function runAIStep() {
-  roundCount++;
-  roundDisplay.textContent = `Round: ${roundCount}`;
+    roundCount++;
+    roundDisplay.textContent = `Round: ${roundCount}`;
 
-  // AI chooses based on probabilities
-  let rand = Math.random();
-  let sum = 0;
-  let chosenIndex = 0;
-  for (let i = 0; i < probabilities.length; i++) {
-    sum += probabilities[i];
-    if (rand <= sum) {
-      chosenIndex = i;
-      break;
+    // AI chooses based on probabilities
+    let rand = Math.random();
+    let sum = 0;
+    let chosenIndex = 0;
+    for (let i = 0; i < probabilities.length; i++) {
+        sum += probabilities[i];
+        if (rand <= sum) {
+            chosenIndex = i;
+            break;
+        }
     }
-  }
 
-  // Reward for chosen chest
-  let reward = Math.floor(Math.random() * 10 + 1);
-  rewards[chosenIndex] += reward;
+    // Reward for chosen chest
+    let reward = Math.floor(Math.random() * 10 + 1);
+    rewards[chosenIndex] += reward;
 
-  // Update probabilities (simulate learning)
-  const total = rewards.reduce((a,b) => a+b,0);
-  probabilities = rewards.map(r => r/total || 0.25);
+    // Update probabilities (simulate learning)
+    const total = rewards.reduce((a,b)=>a+b,0);
+    probabilities = rewards.map(r => total ? r/total : 0.25);
 
-  // Update output
-  output.innerHTML = `AI chose <b>${chests[chosenIndex]}</b> and earned <b>${reward}</b> points!<br>
-  Current rewards: ${chests.map((c,i)=>`${c}: ${rewards[i]} pts`).join(" | ")}`;
+    // Update text output
+    output.innerHTML = `AI chose <b>${chests[chosenIndex]}</b> and earned <b>${reward}</b> points!<br>
+    Current rewards: ${chests.map((c,i)=>`${c}: ${rewards[i]} pts`).join(" | ")}`;
 
-  probDisplay.innerHTML = `Probabilities: ${chests.map((c,i)=>`${c}: ${(probabilities[i]*100).toFixed(1)}%`).join(" | ")}`;
+    probDisplay.innerHTML = `Probabilities: ${chests.map((c,i)=>`${c}: ${(probabilities[i]*100).toFixed(1)}%`).join(" | ")}`;
 
-  // Update chart
-  chart.data.datasets[0].data = rewards;
-  chart.update();
+    // Update chart
+    chart.data.datasets[0].data = rewards;
+    chart.update();
 }
 
-runBtn.addEventListener("click", () => {
-  intervalId = setInterval(runAIStep, 1000); // 1 round per second
+// Buttons
+document.getElementById("runAI").addEventListener("click", () => {
+    if (!intervalId) intervalId = setInterval(runAIStep, 1000);
 });
-
-stopBtn.addEventListener("click", () => {
-  clearInterval(intervalId);
+document.getElementById("stopAI").addEventListener("click", () => {
+    clearInterval(intervalId);
+    intervalId = null;
 });
-button.addEventListener("click", runAI);
+document.getElementById("resetAI").addEventListener("click", () => {
+    clearInterval(intervalId);
+    intervalId = null;
+    rewards = [0,0,0,0];
+    probabilities = [0.25,0.25,0.25,0.25];
+    roundCount = 0;
+    roundDisplay.textContent = `Round: 0`;
+    output.innerHTML = '';
+    probDisplay.innerHTML = '';
+    chart.data.datasets[0].data = rewards;
+    chart.update();
+});
