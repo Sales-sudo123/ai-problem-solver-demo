@@ -1,8 +1,8 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  margin-top: 40px;
   background-color: #f0f8ff;
+  margin-top: 40px;
 }
 
 h1 { color: #2c3e50; }
@@ -13,10 +13,11 @@ p { font-size: 1.1em; }
   font-size: 30px;
   padding: 15px 25px;
   margin: 5px;
+  cursor: default;
 }
 
-#runAI, #stopAI {
-  margin-top: 20px;
+button {
+  margin: 10px 5px;
   padding: 10px 20px;
   font-size: 18px;
   border: none;
@@ -26,5 +27,6 @@ p { font-size: 1.1em; }
 
 #runAI { background-color: #f39c12; color: white; }
 #stopAI { background-color: #c0392b; color: white; }
+#resetAI { background-color: #27ae60; color: white; }
 
 #output, #probabilities, #round { margin-top: 15px; font-size: 1.2em; }
