@@ -1,6 +1,5 @@
 const chests = ["🗝️ Chest A", "🗝️ Chest B", "🗝️ Chest C", "🗝️ Chest D"];
 let rewards = [0, 0, 0, 0];
-let probabilities = [0.25, 0.25, 0.25, 0.25];
 let roundCount = 0;
 let intervalId;
 
@@ -35,36 +34,44 @@ const chart = new Chart(ctx, {
     }
 });
 
+// Softmax function for probabilities
+function softmax(arr, temperature = 5) {
+    const expVals = arr.map(x => Math.exp(x / temperature));
+    const sumExp = expVals.reduce((a,b) => a+b,0);
+    return expVals.map(x => x/sumExp);
+}
+
+// Choose chest based on probability distribution
+function chooseChest(probs) {
+    const r = Math.random();
+    let cumulative = 0;
+    for (let i = 0; i < probs.length; i++) {
+        cumulative += probs[i];
+        if (r <= cumulative) return i;
+    }
+    return probs.length -1; // fallback
+}
+
 function runAIStep() {
     roundCount++;
     roundDisplay.textContent = `Round: ${roundCount}`;
 
-    const epsilon = 0.5; // 20% chance to explore randomly
-    let chosenIndex;
+    // Compute softmax probabilities
+    const temperature = 5; // higher = more exploration
+    const probs = softmax(rewards, temperature);
 
-    if (Math.random() < epsilon) {
-        // Explore: pick a random chest
-        chosenIndex = Math.floor(Math.random() * chests.length);
-    } else {
-        // Exploit: pick chest with highest rewards
-        let maxReward = Math.max(...rewards);
-        const candidates = rewards.map((r,i) => r === maxReward ? i : -1).filter(i => i !== -1);
-        chosenIndex = candidates[Math.floor(Math.random() * candidates.length)];
-    }
+    // Pick a chest based on probabilities
+    const chosenIndex = chooseChest(probs);
 
-    // Reward for chosen chest
-    let reward = Math.floor(Math.random() * 10 + 1);
+    // Assign reward
+    const reward = Math.floor(Math.random() * 10 + 1);
     rewards[chosenIndex] += reward;
 
-    // Update probabilities for display only
-    const total = rewards.reduce((a,b)=>a+b,0);
-    probabilities = rewards.map(r => total ? r/total : 0.25);
-
-    // Update text output
+    // Update text
     output.innerHTML = `AI chose <b>${chests[chosenIndex]}</b> and earned <b>${reward}</b> points!<br>
-    Current rewards: ${chests.map((c,i)=>`${c}: ${rewards[i]} pts`).join(" | ")}`;
+        Current rewards: ${chests.map((c,i)=>`${c}: ${rewards[i]} pts`).join(" | ")}`;
 
-    probDisplay.innerHTML = `Probabilities: ${chests.map((c,i)=>`${c}: ${(probabilities[i]*100).toFixed(1)}%`).join(" | ")}`;
+    probDisplay.innerHTML = `Probabilities: ${chests.map((c,i)=>`${c}: ${(probs[i]*100).toFixed(1)}%`).join(" | ")}`;
 
     // Update chart
     chart.data.datasets[0].data = rewards;
@@ -83,7 +90,6 @@ document.getElementById("resetAI").addEventListener("click", () => {
     clearInterval(intervalId);
     intervalId = null;
     rewards = [0,0,0,0];
-    probabilities = [0.25,0.25,0.25,0.25];
     roundCount = 0;
     roundDisplay.textContent = `Round: 0`;
     output.innerHTML = '';
