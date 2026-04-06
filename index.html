@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Treasure Hunt AI Demo</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Treasure Hunt AI Simulation</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Treasure Hunt AI Demo</h1>
-  <p>Watch the AI learn which treasure chest has the most points!</p>
+<h1>Treasure Hunt AI Simulation</h1>
+<p>Watch the AI learn which treasure chest has the most points!</p>
 
-  <div id="chests">
-    <button class="chest-btn">🗝️ Chest A</button>
-    <button class="chest-btn">🗝️ Chest B</button>
-    <button class="chest-btn">🗝️ Chest C</button>
-    <button class="chest-btn">🗝️ Chest D</button>
-  </div>
+<div id="chests">
+  <button class="chest-btn">🗝️ Chest A</button>
+  <button class="chest-btn">🗝️ Chest B</button>
+  <button class="chest-btn">🗝️ Chest C</button>
+  <button class="chest-btn">🗝️ Chest D</button>
+</div>
 
-  <button id="runAI">Run AI</button>
+<button id="runAI">Run AI Simulation</button>
+<button id="stopAI">Stop</button>
 
-  <div id="round">Round: 0</div>
-  <div id="output"></div>
-  <div id="probabilities"></div>
+<div id="round">Round: 0</div>
+<div id="output"></div>
+<div id="probabilities"></div>
+<canvas id="rewardChart" width="500" height="200"></canvas>
 
-  <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
