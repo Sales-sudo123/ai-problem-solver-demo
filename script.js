@@ -39,23 +39,24 @@ function runAIStep() {
     roundCount++;
     roundDisplay.textContent = `Round: ${roundCount}`;
 
-    // AI chooses based on probabilities
-    let rand = Math.random();
-    let sum = 0;
-    let chosenIndex = 0;
-    for (let i = 0; i < probabilities.length; i++) {
-        sum += probabilities[i];
-        if (rand <= sum) {
-            chosenIndex = i;
-            break;
-        }
+    const epsilon = 0.2; // 20% chance to explore randomly
+    let chosenIndex;
+
+    if (Math.random() < epsilon) {
+        // Explore: pick a random chest
+        chosenIndex = Math.floor(Math.random() * chests.length);
+    } else {
+        // Exploit: pick chest with highest rewards
+        let maxReward = Math.max(...rewards);
+        const candidates = rewards.map((r,i) => r === maxReward ? i : -1).filter(i => i !== -1);
+        chosenIndex = candidates[Math.floor(Math.random() * candidates.length)];
     }
 
     // Reward for chosen chest
     let reward = Math.floor(Math.random() * 10 + 1);
     rewards[chosenIndex] += reward;
 
-    // Update probabilities (simulate learning)
+    // Update probabilities for display only
     const total = rewards.reduce((a,b)=>a+b,0);
     probabilities = rewards.map(r => total ? r/total : 0.25);
 
