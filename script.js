@@ -39,7 +39,7 @@ function runAIStep() {
     roundCount++;
     roundDisplay.textContent = `Round: ${roundCount}`;
 
-    const epsilon = 0.2; // 20% chance to explore randomly
+    const epsilon = 0.5; // 20% chance to explore randomly
     let chosenIndex;
 
     if (Math.random() < epsilon) {
