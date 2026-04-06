@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <title>Treasure Hunt AI Simulation</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <h1>Treasure Hunt AI Simulation</h1>
-<p>Watch the AI learn which treasure chest has the most points!</p>
+<p>Watch the AI learn which treasure chest gives the most points over time!</p>
 
 <div id="chests">
   <button class="chest-btn">🗝️ Chest A</button>
@@ -16,15 +17,18 @@
   <button class="chest-btn">🗝️ Chest D</button>
 </div>
 
-<button id="runAI">Run AI Simulation</button>
-<button id="stopAI">Stop</button>
+<div>
+  <button id="runAI">Start Simulation</button>
+  <button id="stopAI">Stop</button>
+  <button id="resetAI">Reset Simulation</button>
+</div>
 
 <div id="round">Round: 0</div>
 <div id="output"></div>
 <div id="probabilities"></div>
-<canvas id="rewardChart" width="500" height="200"></canvas>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<canvas id="rewardChart" width="600" height="300"></canvas>
+
 <script src="script.js"></script>
 </body>
 </html>
