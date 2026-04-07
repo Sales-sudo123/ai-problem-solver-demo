@@ -35,7 +35,7 @@ function pickChest() {
   }
 
   // LEARNING AI
-  const epsilon = 0.8; // probability to explore
+  const epsilon = 0.97; // probability to explore
   if (Math.random() < epsilon) {
     return Math.floor(Math.random() * chests.length); // explore randomly
   } else {
@@ -109,7 +109,7 @@ function runAIStep() {
 function startSimulation() {
   if (!running) {
     running = true;
-    interval = setInterval(runAIStep, 500);
+    interval = setInterval(runAIStep, 50);
   }
 }
 
