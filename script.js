@@ -35,7 +35,7 @@ function pickChest() {
   }
 
   // LEARNING AI
-  const epsilon = 0.2; // probability to explore
+  const epsilon = 0.8; // probability to explore
   if (Math.random() < epsilon) {
     return Math.floor(Math.random() * chests.length); // explore randomly
   } else {
