@@ -1,5 +1,5 @@
 // --------------- Variables ---------------
-const chests = ["💵 Cash", "📈 Stocks", "💰 Gold", "🏦 Savings"];
+const chests = ["Stock 1", "Stock 2", "Stock 3", "Stock 4"];
 let rewards = [0, 0, 0, 0];
 let roundCount = 0;
 let running = false;
