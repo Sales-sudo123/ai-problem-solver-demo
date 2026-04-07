@@ -1,32 +1,31 @@
 // --------------- Variables ---------------
-const stocks = ["Stock 1", "Stock 2", "Stock 3", "Stock 4"];
+const chests = ["💵 Cash", "📈 Stocks", "💰 Gold", "🏦 Savings"];
 let rewards = [0, 0, 0, 0];
-let picks = [0, 0, 0, 0]; // number of times each stock chosen
 let roundCount = 0;
 let running = false;
 let interval;
 
 const modeSelect = document.getElementById("mode");
-const roundDisplay = document.getElementById("round");
-const rewardDisplay = document.getElementById("output");
-const startBtn = document.getElementById("runAI");
-const stopBtn = document.getElementById("stopAI");
-const resetBtn = document.getElementById("resetAI");
+const roundDisplay = document.getElementById("roundDisplay");
+const rewardDisplay = document.getElementById("rewardDisplay");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+const resetBtn = document.getElementById("resetBtn");
 
 // --------------- Helper Functions ---------------
 
-// Softmax function
+// Softmax function for probabilistic selection
 function softmax(values, temperature = 1) {
   const exps = values.map(v => Math.exp(v / temperature));
   const sumExps = exps.reduce((a, b) => a + b, 0);
   return exps.map(e => e / sumExps);
 }
 
-// Pick a stock based on mode
-function pickStock() {
+// Pick a chest based on mode
+function pickChest() {
   const mode = modeSelect.value;
-  const epsilon = 0.3; // 30% explore
 
+  // GREEDY ALGORITHM
   if (mode === "greedy") {
     let maxReward = Math.max(...rewards);
     const candidates = rewards
@@ -35,14 +34,13 @@ function pickStock() {
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  // Learning AI
+  // LEARNING AI
+  const epsilon = 0.35; // probability to explore
   if (Math.random() < epsilon) {
-    return Math.floor(Math.random() * stocks.length); // explore randomly
+    return Math.floor(Math.random() * chests.length); // explore randomly
   } else {
-    // Softmax over average rewards
-    const avgRewards = rewards.map((r, i) => (picks[i] > 0 ? r / picks[i] : 0));
-    const probs = softmax(avgRewards, 2);
-    let r = Math.random();
+    const probs = softmax(rewards, 2);
+    const r = Math.random();
     let cumulative = 0;
     for (let i = 0; i < probs.length; i++) {
       cumulative += probs[i];
@@ -61,7 +59,6 @@ function getReward() {
 function updateDisplay(chosenIndex, reward) {
   roundCount++;
   rewards[chosenIndex] += reward;
-  picks[chosenIndex]++;
 
   const modeText = modeSelect.value === "greedy"
     ? "Greedy Algorithm (rule-based)"
@@ -69,8 +66,8 @@ function updateDisplay(chosenIndex, reward) {
 
   roundDisplay.textContent = `Round: ${roundCount} | Mode: ${modeText}`;
 
-  rewardDisplay.innerHTML = stocks.map((s, i) =>
-    `${s}: ${rewards[i]} pts`
+  rewardDisplay.innerHTML = chests.map((c, i) =>
+    `${c}: ${rewards[i]} pts`
   ).join(" | ");
 
   updateChart();
@@ -83,7 +80,7 @@ function initChart() {
   chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: stocks,
+      labels: chests,
       datasets: [{
         label: 'Rewards',
         data: rewards,
@@ -104,7 +101,7 @@ function updateChart() {
 
 // --------------- Simulation Control ---------------
 function runAIStep() {
-  const chosen = pickStock();
+  const chosen = pickChest();
   const reward = getReward();
   updateDisplay(chosen, reward);
 }
@@ -112,7 +109,7 @@ function runAIStep() {
 function startSimulation() {
   if (!running) {
     running = true;
-    interval = setInterval(runAIStep, 1000); // 1 second per round
+    interval = setInterval(runAIStep, 500);
   }
 }
 
@@ -124,11 +121,10 @@ function stopSimulation() {
 function resetSimulation() {
   stopSimulation();
   rewards = [0, 0, 0, 0];
-  picks = [0, 0, 0, 0];
   roundCount = 0;
   updateChart();
   roundDisplay.textContent = 'Round: 0';
-  rewardDisplay.textContent = stocks.map(s => `${s}: 0 pts`).join(" | ");
+  rewardDisplay.textContent = chests.map(c => `${c}: 0 pts`).join(" | ");
 }
 
 // --------------- Event Listeners ---------------
