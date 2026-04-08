@@ -39,7 +39,7 @@ function pickStock() {
   }
 
   // Learning AI (epsilon-greedy)
-  const epsilon = 0.6; // probability to explore
+  const epsilon = 0.75; // probability to explore
   if (Math.random() < epsilon) {
     return Math.floor(Math.random() * stocks.length); // explore randomly
   } else {
