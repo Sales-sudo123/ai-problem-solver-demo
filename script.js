@@ -1,13 +1,14 @@
 // --------------- Variables ---------------
-const chests = ["Stock 1", "Stock 2", "Stock 3", "Stock 4"];
+const stocks = ["Stock 1", "Stock 2", "Stock 3", "Stock 4"];
 let rewards = [0, 0, 0, 0];
 let roundCount = 0;
 let running = false;
 let interval;
 
 // Hidden true values for each stock (unknown to AI)
-const trueValues = [4, 7, 3, 5]; // you can adjust these numbers
+const trueValues = [4, 7, 3, 5]; // can adjust numbers for each stock
 
+// --------------- DOM Elements ---------------
 const modeSelect = document.getElementById("mode");
 const roundDisplay = document.getElementById("roundDisplay");
 const rewardDisplay = document.getElementById("rewardDisplay");
@@ -25,11 +26,11 @@ function softmax(values, temperature = 1) {
 }
 
 // Pick a stock based on mode
-function pickChest() {
+function pickStock() {
   const mode = modeSelect.value;
 
-  // GREEDY ALGORITHM
   if (mode === "greedy") {
+    // Pick the stock with the highest reward so far
     let maxReward = Math.max(...rewards);
     const candidates = rewards
       .map((r, i) => r === maxReward ? i : -1)
@@ -37,29 +38,30 @@ function pickChest() {
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  // LEARNING AI (trial & error)
+  // Learning AI (epsilon-greedy)
   const epsilon = 0.35; // probability to explore
   if (Math.random() < epsilon) {
-    return Math.floor(Math.random() * chests.length); // explore randomly
+    return Math.floor(Math.random() * stocks.length); // explore randomly
   } else {
-    const probs = softmax(rewards, 2);
-    const r = Math.random();
+    const probs = softmax(rewards, 2); // probabilistic choice based on rewards
+    let r = Math.random();
     let cumulative = 0;
     for (let i = 0; i < probs.length; i++) {
       cumulative += probs[i];
       if (r <= cumulative) return i;
     }
-    return probs.length - 1;
+    return stocks.length - 1; // fallback
   }
 }
 
 // Simulate reward based on hidden true value + some randomness
 function getReward(index) {
-  const reward = Math.floor(trueValues[index] + (Math.random() * 4 - 2));
-  return Math.max(reward, 0); // ensure reward is never negative
+  // Small random variation to simulate real-world stock fluctuations
+  const reward = Math.floor(trueValues[index] + Math.random() * 4 - 2);
+  return Math.max(reward, 0); // never negative
 }
 
-// Update display
+// Update display and chart
 function updateDisplay(chosenIndex, reward) {
   roundCount++;
   rewards[chosenIndex] += reward;
@@ -69,9 +71,8 @@ function updateDisplay(chosenIndex, reward) {
     : "Learning AI (trial & error)";
 
   roundDisplay.textContent = `Round: ${roundCount} | Mode: ${modeText}`;
-
-  rewardDisplay.innerHTML = chests.map((c, i) =>
-    `${c}: ${rewards[i]} pts`
+  rewardDisplay.innerHTML = stocks.map((s, i) =>
+    `${s}: ${rewards[i]} pts`
   ).join(" | ");
 
   updateChart();
@@ -84,7 +85,7 @@ function initChart() {
   chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: chests,
+      labels: stocks,
       datasets: [{
         label: 'Rewards',
         data: rewards,
@@ -105,15 +106,15 @@ function updateChart() {
 
 // --------------- Simulation Control ---------------
 function runAIStep() {
-  const chosen = pickChest();
-  const reward = getReward(chosen); // pass chosen stock
+  const chosen = pickStock();
+  const reward = getReward(chosen);
   updateDisplay(chosen, reward);
 }
 
 function startSimulation() {
   if (!running) {
     running = true;
-    interval = setInterval(runAIStep, 500); // change interval if you want slower/faster
+    interval = setInterval(runAIStep, 500); // change 500 to slower/faster
   }
 }
 
@@ -128,7 +129,7 @@ function resetSimulation() {
   roundCount = 0;
   updateChart();
   roundDisplay.textContent = 'Round: 0';
-  rewardDisplay.textContent = chests.map(c => `${c}: 0 pts`).join(" | ");
+  rewardDisplay.textContent = stocks.map(s => `${s}: 0 pts`).join(" | ");
 }
 
 // --------------- Event Listeners ---------------
@@ -136,7 +137,7 @@ startBtn.addEventListener('click', startSimulation);
 stopBtn.addEventListener('click', stopSimulation);
 resetBtn.addEventListener('click', resetSimulation);
 
-// Initialize chart on page load
+// --------------- Initialize ---------------
 window.onload = () => {
   initChart();
   resetSimulation();
