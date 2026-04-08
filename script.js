@@ -55,7 +55,6 @@ function pickChest() {
 
 // Simulate reward based on hidden true value + some randomness
 function getReward(index) {
-  // Add small randomness (-2 to +1) to simulate real-world variation
   const reward = Math.floor(trueValues[index] + (Math.random() * 4 - 2));
   return Math.max(reward, 0); // ensure reward is never negative
 }
@@ -140,7 +139,5 @@ resetBtn.addEventListener('click', resetSimulation);
 // Initialize chart on page load
 window.onload = () => {
   initChart();
-  resetSimulation();
-};
   resetSimulation();
 };
