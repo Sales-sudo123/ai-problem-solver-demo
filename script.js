@@ -5,6 +5,9 @@ let roundCount = 0;
 let running = false;
 let interval;
 
+// Hidden true values for each stock (unknown to AI)
+const trueValues = [4, 7, 3, 5]; // you can adjust these numbers
+
 const modeSelect = document.getElementById("mode");
 const roundDisplay = document.getElementById("roundDisplay");
 const rewardDisplay = document.getElementById("rewardDisplay");
@@ -21,7 +24,7 @@ function softmax(values, temperature = 1) {
   return exps.map(e => e / sumExps);
 }
 
-// Pick a chest based on mode
+// Pick a stock based on mode
 function pickChest() {
   const mode = modeSelect.value;
 
@@ -34,7 +37,7 @@ function pickChest() {
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  // LEARNING AI
+  // LEARNING AI (trial & error)
   const epsilon = 0.35; // probability to explore
   if (Math.random() < epsilon) {
     return Math.floor(Math.random() * chests.length); // explore randomly
@@ -50,9 +53,11 @@ function pickChest() {
   }
 }
 
-// Simulate reward (random 1–10)
-function getReward() {
-  return Math.floor(Math.random() * 10) + 1;
+// Simulate reward based on hidden true value + some randomness
+function getReward(index) {
+  // Add small randomness (-2 to +1) to simulate real-world variation
+  const reward = Math.floor(trueValues[index] + (Math.random() * 4 - 2));
+  return Math.max(reward, 0); // ensure reward is never negative
 }
 
 // Update display
@@ -102,14 +107,14 @@ function updateChart() {
 // --------------- Simulation Control ---------------
 function runAIStep() {
   const chosen = pickChest();
-  const reward = getReward();
+  const reward = getReward(chosen); // pass chosen stock
   updateDisplay(chosen, reward);
 }
 
 function startSimulation() {
   if (!running) {
     running = true;
-    interval = setInterval(runAIStep, 500);
+    interval = setInterval(runAIStep, 500); // change interval if you want slower/faster
   }
 }
 
@@ -135,5 +140,7 @@ resetBtn.addEventListener('click', resetSimulation);
 // Initialize chart on page load
 window.onload = () => {
   initChart();
+  resetSimulation();
+};
   resetSimulation();
 };
