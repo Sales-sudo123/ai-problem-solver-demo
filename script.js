@@ -6,7 +6,7 @@ let running = false;
 let interval;
 
 // Hidden true values for each stock (unknown to AI)
-const trueValues = [4, 7, 3, 5]; // can adjust numbers for each stock
+const trueValues = [4, 25, 3, 5]; // can adjust numbers for each stock
 
 // --------------- DOM Elements ---------------
 const modeSelect = document.getElementById("mode");
