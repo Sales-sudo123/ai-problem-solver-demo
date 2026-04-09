@@ -2,24 +2,34 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background-color: #f0f8ff;
-  margin-top: 40px;
+  margin: 20px auto;          /* reduced top space */
+  max-width: 800px;           /* keeps everything compact */
 }
 
-h1 { color: #2c3e50; }
-p { font-size: 1.1em; }
+h1 { 
+  color: #2c3e50; 
+  margin-bottom: 5px;         /* tighter spacing */
+}
 
-#chests { margin: 20px; }
+p { 
+  font-size: 1em;             /* slightly smaller */
+  margin-bottom: 10px;
+}
+
+#chests { 
+  margin: 10px;               /* reduced spacing */
+}
+
 .chest-btn {
-  font-size: 30px;
-  padding: 15px 25px;
-  margin: 5px;
-  cursor: default;
+  font-size: 22px;            /* smaller buttons */
+  padding: 10px 15px;
+  margin: 3px;
 }
 
 button {
-  margin: 10px 5px;
-  padding: 10px 20px;
-  font-size: 18px;
+  margin: 5px;
+  padding: 8px 14px;
+  font-size: 14px;            /* smaller controls */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -29,4 +39,15 @@ button {
 #stopAI { background-color: #c0392b; color: white; }
 #resetAI { background-color: #27ae60; color: white; }
 
-#output, #probabilities, #round { margin-top: 15px; font-size: 1.2em; }
+#output, #probabilities, #round { 
+  margin-top: 10px; 
+  font-size: 1em;             /* smaller text */
+}
+
+/* 🔥 MOST IMPORTANT PART (chart sizing) */
+canvas {
+  width: 100% !important;
+  max-width: 900px;   /* controls max size on big screens */
+  height: 500px !important;  /* bigger chart */
+  margin-top: 15px;
+}
